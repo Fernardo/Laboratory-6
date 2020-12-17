@@ -1,0 +1,112 @@
+/*
+==========================================
+Name:studywork.c
+Author:Roman Liubkin
+Date:2020/11/13
+Version:
+Copiright:shareware
+Description:work
+==========================================
+*/
+
+#include <iostream>
+#include <Windows.h>
+using namespace std;
+
+enum class veh_type {car, motorcycle};
+
+class Vehicle
+{
+protected:
+	veh_type type{ veh_type::car };
+	string brand{ "NONE" };
+	string model{ "NONE" };
+	float price{ 0.0F };
+public:
+	Vehicle() : type(veh_type::car), brand("NONE"), model("NONE"), price(0.0F)
+	{ }
+	Vehicle(veh_type t) : type(t), brand("NONE"), model("NONE"), price(0.0F)
+	{ }
+	Vehicle(veh_type t, string brnd, string mdl, float prc) : type(t), brand(brnd), model(mdl), price(prc)
+	{ }
+	
+	virtual void showInfo() const = 0;
+};
+
+class Car : public Vehicle
+{
+public:
+	Car() : Vehicle(veh_type::car)
+	{ }
+	Car(string brnd, string mdl, float prc) : Vehicle(veh_type::car, brnd, mdl, prc)
+	{ }
+
+	void showInfo() const
+	{
+		cout << "Автомобиль\tМарка: " << brand << "\tМодель: " << model << "\tЦена: " << price << "руб.\n";
+	}
+};
+
+class Motorcycle : public Vehicle
+{
+public:
+	Motorcycle() : Vehicle(veh_type::motorcycle)
+	{ }
+	Motorcycle(string brnd, string mdl, float prc) : Vehicle(veh_type::motorcycle, brnd, mdl, prc)
+	{ }
+
+	void showInfo() const
+	{
+		cout << "Мотоцикл\tМарка: " << brand << "\tМодель: " << model << "\tЦена: " << price << "руб.\n";
+	}
+};
+
+class Market
+{
+private:
+	Vehicle** veh{ NULL };
+	int veh_count{ 0 };
+	int car_count{ 0 };
+	int moto_count{ 0 };
+public:
+	Market() : veh(NULL), veh_count(5), car_count(3), moto_count(2)
+	{ 
+		veh = new Vehicle * [veh_count];
+		veh[0] = new Car("Dace", "G3", 10000000000);
+		veh[1] = new Motorcycle("DangerMaster", "PODveska", 5000);
+		veh[2] = new Car("Panzerkampfwagen", "VI Ausf.E", 899999);
+		veh[3] = new Car("Nani?", "X1", 8800555535);
+		veh[4] = new Motorcycle("pail", "Gagar", 123456789);
+	}
+	~Market()
+	{
+		for (int i = 0; i < veh_count; i++)
+			delete veh[i];
+		delete[] veh;
+	}
+
+	void showInfo() const
+	{
+		cout << "ВСего на данный момент " << veh_count << " транспортных средств:\n" << car_count << " автомобилей\n" << moto_count << " мотоциклов\n";
+	}
+	void showStorage() const
+	{
+		cout << "Склад:\n" << fixed << setprecision(2);
+		for (int i = 0; i < veh_count; i++)
+			veh[i]->showInfo();
+	}
+};
+
+int main()
+{
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+
+	Market CarsAndMoto;
+	CarsAndMoto.showInfo();
+	cout << endl;
+	CarsAndMoto.showStorage();
+
+	system("pause");
+	return 0;
+}
